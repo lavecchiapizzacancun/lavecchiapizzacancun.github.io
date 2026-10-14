@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Vecchia Pizza</title>
+<meta name="description" content="La Vecchia Pizza, cocina italiana en Plaza Murano, Av. Huayacán, Cancún. Pizzas en masa napolitana o romana, pastas, risotto y un lugar donde los niños hacen su propia pizza.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: portada con foto a lo ancho; debajo, secciones blancas separadas por líneas finas, títulos Lora y bloques en tarjetas para que no se lea como un solo texto */
+:root{
+  --blanco:#FFFFFF; --suave:#F7F6F4; --texto:#22201E; --gris:#55504B; --linea:#E6E1DB;
+  --oxido:#B5612C; --oxido-2:#97501F; --wa:#25D366;
+  --serif:Lora, Georgia, "Times New Roman", serif;
+  --sans:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--blanco);color:var(--texto);font:400 18px/1.6 var(--sans)}
+img{display:block;max-width:100%}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:20px}
+.caps{font:700 13px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+:focus-visible{outline:2px solid var(--oxido);outline-offset:3px}
+
+/* Franja superior */
+.ticker{background:var(--oxido);color:#fff;overflow:hidden;white-space:nowrap;padding-block:9px}
+.ticker div{display:inline-flex;gap:26px;animation:mover 45s linear infinite;padding-left:26px}
+.ticker span{font:700 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase}
+@keyframes mover{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker div{animation:none}}
+
+/* Portada */
+.hero{position:relative;min-height:min(88vh,820px);display:flex;flex-direction:column;color:#fff;
+  background:url(img/fachada.jpg) center 30%/cover no-repeat}
+.hero::before{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.62) 0%,rgba(0,0,0,.25) 40%,rgba(0,0,0,.3) 60%,rgba(0,0,0,.72) 100%)}
+.hero > *{position:relative}
+.top{padding-top:22px}
+.bar{display:flex;align-items:center;justify-content:space-between}
+.marca{text-align:center;text-decoration:none;line-height:1}
+.marca .n{display:block;font:600 38px/1 var(--serif);letter-spacing:.06em}
+.marca .s{display:block;font:600 11px/1 var(--sans);letter-spacing:.34em;text-transform:uppercase;margin-top:9px;opacity:.9}
+.lado{width:160px;display:flex;align-items:center;gap:10px;text-decoration:none}
+.lado.d{justify-content:flex-end}
+.lado svg{width:20px;height:20px;flex:none}
+nav.menu{border-bottom:1px solid rgba(255,255,255,.35)}
+
+nav.menu a{text-shadow:0 1px 6px rgba(0,0,0,.6)}
+nav.menu ul{list-style:none;display:flex;justify-content:center;flex-wrap:wrap;gap:6px 40px;padding-block:16px}
+nav.menu a{text-decoration:none}
+nav.menu a:hover{color:#F2B98F}
+.portada{margin-top:auto;padding-bottom:70px;text-align:center}
+.portada h1{font:600 clamp(2.8rem,7vw,5rem)/1.05 var(--serif);text-shadow:0 2px 18px rgba(0,0,0,.35);text-wrap:balance}
+.portada h1.logo{margin:0 auto}
+.portada h1.logo{display:flex;justify-content:center;width:100%}
+.portada h1.logo img{width:min(240px,46vw);height:auto;margin:0 auto;filter:drop-shadow(0 2px 14px rgba(0,0,0,.45))}
+.portada p{font-size:1.2rem;max-width:44ch;margin:18px auto 30px;opacity:.95}
+.botones{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 28px;font:700 13px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:1.5px solid transparent;transition:background .15s,border-color .15s,color .15s}
+.btn svg{width:18px;height:18px;flex:none}
+.btn-oxido{background:var(--oxido);color:#fff}
+.btn-oxido:hover{background:var(--oxido-2)}
+.btn-blanco{border-color:rgba(255,255,255,.8);color:#fff}
+.btn-blanco:hover{background:rgba(255,255,255,.12)}
+.btn-borde{border-color:var(--texto);color:var(--texto)}
+.btn-borde:hover{background:var(--texto);color:#fff}
+@media (max-width:760px){
+  .lado .t{display:none}.lado{width:44px}
+  .marca .n{font-size:30px}
+  nav.menu ul{gap:4px 20px;padding-block:12px}
+  nav.menu .caps{font-size:11px;letter-spacing:.14em}
+}
+
+/* Secciones */
+section{padding-block:88px}
+@media (max-width:760px){section{padding-block:60px}}
+.gris-bg{background:var(--blanco)}
+main > section + section{border-top:1px solid #D9DCDF}
+.alterna{background:#F3F4F6}
+.alterna .resena,.alterna .carta{background:#fff}
+.cab{text-align:center;margin-bottom:44px}
+.cab .caps{color:var(--oxido)}
+.cab h2::after{content:"";display:block;width:48px;height:2px;background:var(--oxido);margin:20px auto 0}
+.cab h2{margin-bottom:22px}
+.cab h2{font:500 clamp(1.9rem,4vw,2.8rem)/1.15 var(--serif);margin-top:14px;text-wrap:balance}
+.cab p{color:var(--gris);max-width:56ch;margin:16px auto 0}
+
+/* Quiénes somos */
+.somos{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.somos .caps{color:var(--oxido)}
+.somos h2{font:500 clamp(1.9rem,4vw,2.8rem)/1.15 var(--serif);margin:14px 0 20px;text-wrap:balance}
+.somos p{color:var(--gris);max-width:52ch}
+.somos p + p{margin-top:14px}
+.foto{width:100%;height:100%;object-fit:cover;aspect-ratio:4/5}
+.datos{display:flex;flex-wrap:wrap;gap:28px 40px;margin-top:30px;padding-top:24px;border-top:1px solid var(--linea)}
+.datos b{display:block;font:500 1.9rem/1 var(--serif);color:var(--oxido)}
+.datos span{font-size:.92rem;color:var(--gris)}
+@media (max-width:860px){.somos{grid-template-columns:1fr;gap:36px}.somos .foto{aspect-ratio:4/3;object-position:center 30%}}
+
+/* Menú */
+.idiomas{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+.idiomas .btn{min-width:240px;justify-content:center}
+.tabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.tab{font:700 13px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;padding:13px 18px;border:1px solid var(--linea);background:#fff;color:var(--texto);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--texto);color:#fff;border-color:var(--texto)}
+.carta{border:1px solid var(--linea);background:#fff;max-width:820px;margin:0 auto}
+.firma{padding:26px 28px;border-bottom:1px solid var(--linea);display:flex;flex-direction:column;gap:6px}
+.firma .caps{color:var(--oxido);font-size:11px}
+.firma h3{font:italic 500 1.9rem/1.1 var(--serif)}
+.firma p{color:var(--gris)}
+.plato{padding:18px 28px;border-bottom:1px solid var(--linea)}
+.plato:last-child{border-bottom:0}
+.plato h4{font:500 1.3rem/1.2 var(--serif)}
+.plato p{color:var(--gris);font-size:1rem;margin-top:4px}
+.masas{display:grid;grid-template-columns:1fr 1fr}
+.masa{padding:30px 28px}
+.masa + .masa{border-left:1px solid var(--linea)}
+.masa .caps{color:var(--oxido);font-size:11px}
+.masa h3{font:500 1.8rem/1.1 var(--serif);margin:10px 0 10px}
+.masa p{color:var(--gris)}
+@media (max-width:760px){.masas{grid-template-columns:1fr}.masa + .masa{border-left:0;border-top:1px solid var(--linea)}.plato,.firma,.masa{padding-inline:20px}}
+.centro{text-align:center;margin-top:36px}
+/* Niños */
+.ninos{display:grid;grid-template-columns:1fr 1.05fr;gap:60px;align-items:center}
+.galeria{grid-column:1/-1;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:12px}
+.galeria img{width:100%;height:100%;aspect-ratio:4/5;object-fit:cover}
+.galeria img:first-child{aspect-ratio:auto}
+@media (max-width:760px){.galeria{grid-template-columns:1fr 1fr}.galeria img:first-child{grid-column:1/-1;aspect-ratio:3/2}}
+.ninos .caps{color:var(--oxido)}
+.ninos h2{font:500 clamp(1.9rem,4vw,2.8rem)/1.15 var(--serif);margin:14px 0 18px;text-wrap:balance}
+.ninos h2 em{color:var(--oxido);font-style:italic;font-weight:500}
+.ninos p{color:var(--gris);max-width:48ch}
+.ninos ul{list-style:none;margin:24px 0 30px;display:grid;gap:12px}
+.ninos li{display:flex;gap:12px;align-items:baseline}
+.ninos li::before{content:"";width:7px;height:7px;background:var(--oxido);flex:none;transform:translateY(-3px)}
+@media (max-width:860px){.ninos{grid-template-columns:1fr;gap:36px}.ninos > .foto{aspect-ratio:4/3;object-position:center 35%}}
+
+/* Opiniones */
+.citas{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+blockquote{background:#fff;border:1px solid var(--linea);padding:30px 28px;display:flex;flex-direction:column;gap:16px}
+.estrellas{color:var(--oxido);letter-spacing:.18em}
+blockquote p{font:italic 500 1.15rem/1.5 var(--serif)}
+blockquote footer{margin-top:auto;color:var(--gris);font-size:.92rem}
+@media (max-width:900px){.citas{grid-template-columns:1fr}}
+
+/* Novedades */
+.notas{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.nota{border:1px solid var(--linea);padding:24px;display:flex;flex-direction:column;gap:10px}
+.nota time{font:700 12px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--oxido)}
+.nota h3{font:500 1.35rem/1.25 var(--serif)}
+.nota p{color:var(--gris)}
+.ejemplo{display:inline-block;align-self:flex-start;font:700 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gris);border:1px dashed var(--gris);padding:4px 8px}
+@media (max-width:900px){.notas{grid-template-columns:1fr}}
+
+
+/* Carrusel */
+.carrusel{position:relative;min-width:0}
+.pista{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;aspect-ratio:4/5}
+.pista::-webkit-scrollbar{display:none}
+.pista img{flex:0 0 100%;width:100%;height:100%;object-fit:cover;scroll-snap-align:start}
+.flecha{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:var(--texto);font:400 30px/1 var(--serif);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.flecha.izq{left:12px}.flecha.der{right:12px}
+@media (max-width:860px){.pista{aspect-ratio:4/4.4}}
+/* Reseñas estilo Google */
+.resenas{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.resena{border:1px solid #DADCE0;border-radius:8px;padding:20px 22px;background:#fff;font-family:Roboto,Arial,sans-serif;display:flex;flex-direction:column;gap:10px}
+.r-top{display:flex;align-items:center;gap:12px}
+.r-top b{display:block;font-size:15px;font-weight:600;color:#202124}
+.r-top small{display:block;font-size:13px;color:#70757A}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font:500 18px/1 Roboto,Arial,sans-serif;flex:none}
+.g{width:22px;height:22px;margin-left:auto;flex:none}
+.r-est{color:#FBBC04;font-size:18px;letter-spacing:2px}
+.resena p{font-size:15px;line-height:1.55;color:#3C4043}
+@media (max-width:900px){.resenas{grid-template-columns:1fr}}
+.horas{display:grid;grid-template-columns:auto auto;gap:8px 22px;justify-content:start;background:#fff;border-left:3px solid var(--oxido);padding:14px 18px}
+.horas span:nth-child(odd){color:var(--gris)}
+.horas span:nth-child(even){white-space:nowrap}
+@media (max-width:420px){.horas{gap:8px 14px;padding:12px 14px}}
+
+/* Instagram */
+.insta{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.insta a{aspect-ratio:1;background:var(--suave);border:1px solid var(--linea);display:grid;place-items:center;color:var(--gris);text-decoration:none}
+.insta svg{width:28px;height:28px}
+@media (max-width:760px){.insta{grid-template-columns:repeat(3,1fr)}}
+.aviso{text-align:center;color:var(--gris);font-size:.95rem;margin-top:16px}
+
+/* Visítanos */
+.visita{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.visita .caps{color:var(--oxido)}
+.visita h2{font:500 clamp(1.9rem,4vw,2.8rem)/1.15 var(--serif);margin:14px 0 28px}
+dl{display:grid;gap:0}
+dl > div{padding-block:16px;border-top:1px solid #D9DCDF}
+dl > div:first-child{border-top:0;padding-top:0}
+dt{font:700 12px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--oxido);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+dt svg{width:18px;height:18px;flex:none}
+dd{font-size:1.08rem}
+.redes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.visita > div,dd,.redes a{min-width:0}
+@media (max-width:420px){.redes{gap:8px}.redes a{padding:11px 4px;font-size:.84rem;gap:5px}.redes svg{width:15px;height:15px}}
+.redes a{display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;color:#fff;padding:11px 16px;font-weight:700;font-size:.95rem;border-radius:6px}
+.redes a:hover{filter:brightness(1.08)}
+.redes .r-wa{background:#25D366;color:#06301a}
+.redes .r-ig{background:linear-gradient(45deg,#F58529,#DD2A7B 50%,#8134AF)}
+.redes .r-fb{background:#1877F2}
+.redes svg{width:18px;height:18px}
+.mapa{display:grid;place-items:center;aspect-ratio:4/3;text-decoration:none;position:relative;background:url(img/interior.jpg) center/cover;max-width:100%}
+.mapa::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.3)}
+.mapa span{position:relative}
+@media (max-width:860px){.visita{grid-template-columns:1fr;gap:36px}}
+
+/* Pie */
+.pie{border-top:1px solid var(--linea);padding-block:32px 84px;text-align:center;color:var(--gris);font-size:.92rem}
+.pie .marca{display:inline-block;color:var(--texto);margin-bottom:22px}
+.logo-pie{display:inline-block;margin-bottom:14px}
+.logo-pie img{width:120px;height:auto;opacity:.85}
+.pie ul{list-style:none;display:flex;justify-content:center;flex-wrap:wrap;gap:10px 30px;margin-bottom:20px}
+.pie a{text-decoration:none}
+.pie a:hover{color:var(--texto)}
+
+/* WhatsApp flotante */
+.wa{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30;width:60px;height:60px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 8px 22px rgba(0,0,0,.25)}
+.wa svg{width:32px;height:32px;color:#fff}
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-hidden="true"><div>
+  <span>Aquí los niños hacen su propia pizza</span><span>·</span>
+  <span>Abierto todos los días desde la 1:00 pm</span><span>·</span>
+  <span>Plaza Murano · Av. Huayacán · Cancún</span><span>·</span>
+  <span>Menú en español e inglés</span><span>·</span>
+  <span>Aquí los niños hacen su propia pizza</span><span>·</span>
+  <span>Abierto todos los días desde la 1:00 pm</span><span>·</span>
+  <span>Plaza Murano · Av. Huayacán · Cancún</span><span>·</span>
+  <span>Menú en español e inglés</span><span>·</span>
+</div></div>
+
+<header class="hero" id="inicio">
+  <div class="top wrap">
+    <nav class="menu" aria-label="Secciones"><ul>
+      <li><a class="caps" href="#somos">Quiénes somos</a></li>
+      <li><a class="caps" href="#menu">Menú</a></li>
+      <li><a class="caps" href="#ninos">Para los niños</a></li>
+      <li><a class="caps" href="#opiniones">Opiniones</a></li>
+      <li><a class="caps" href="#visitanos">Visítanos</a></li>
+    </ul></nav>
+  </div>
+
+  <div class="portada wrap">
+    <h1 class="logo"><img src="img/logo-blanco.svg" alt="La Vecchia Pizza · Alta Cucina Italiana" width="1810" height="1240"></h1>
+    <p>Pizza y cocina italiana en Plaza Murano, Cancún.</p>
+    <div class="botones">
+      <a class="btn btn-oxido" href="https://wa.me/529981369306?text=Hola%20La%20Vecchia">Contáctanos</a>
+      <a class="btn btn-blanco" href="#menu">Ver el menú</a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="somos">
+  <div class="wrap somos">
+    <div>
+      <span class="caps">Quiénes somos</span>
+      <h2>Un lugar para toda la familia</h2>
+      <p>En La Vecchia, cada ocasión se convierte en un momento especial. Un lugar para toda la familia, donde los más pequeños pueden convertirse en mini grandes pizzeros y disfrutar creando su propia pizza.</p>
+      <p>Auténticos sabores italianos en un ambiente perfecto para compartir, celebrar y disfrutar cualquier día de la semana. ¡Nos vemos hoy!</p>
+    </div>
+    <img class="foto" src="img/comida.jpg" alt="Pizzas, pastas, pan y vino servidos en una mesa de La Vecchia" loading="lazy">
+  </div>
+</section>
+
+<section class="alterna" id="menu">
+  <div class="wrap">
+    <div class="cab">
+      <span class="caps">Menú</span>
+      <h2>Nuestro menú</h2>
+      <p>Pizzas en masa napolitana o romana, pastas, risotto, carnes y postres.</p>
+    </div>
+    <div class="idiomas">
+      <a class="btn btn-oxido" href="https://drive.google.com/file/d/1nJNq3Mdm_Z53Slh0KmcOMwFMmIqndtau/view?usp=sharing" target="_blank" rel="noopener">Menú en español</a>
+      <a class="btn btn-borde" href="https://drive.google.com/file/d/1waPtlPlYgeB51P1li6bQcSeg9Kme-ASU/view?usp=sharing" target="_blank" rel="noopener">Menu in English</a>
+    </div>
+  </div>
+</section>
+
+<section id="ninos">
+  <div class="wrap ninos">
+    <div class="carrusel" aria-label="Fotos de niños preparando pizza">
+      <div class="pista" id="pista">
+        <img src="img/ninos-dos.jpg" alt="Dos niños con gorro de chef preparando su pizza" loading="lazy">
+        <img src="img/nina-mirada.jpg" alt="Niña con gorro de chef extendiendo la masa" loading="lazy">
+        <img src="img/ninos-manos.jpg" alt="Manos de niños extendiendo masa con rodillo" loading="lazy">
+        <img src="img/ninos-dos-b.jpg" alt="Dos niños con mandil de La Vecchia preparando pizza" loading="lazy">
+      </div>
+      <button class="flecha izq" type="button" aria-label="Foto anterior">&#8249;</button>
+      <button class="flecha der" type="button" aria-label="Foto siguiente">&#8250;</button>
+    </div>
+    <div>
+      <span class="caps">Para los niños</span>
+      <h2>Aquí los niños <em>hacen su propia pizza</em></h2>
+      <ul>
+        <li>Preparan su pizza con el pizzero de la casa</li>
+        <li>Menú kids: pizza, pasta o nuggets con papas</li>
+      </ul>
+      <a class="btn btn-oxido" href="https://wa.me/529981369306?text=Hola%20La%20Vecchia%2C%20quiero%20ir%20con%20ni%C3%B1os">Contáctanos</a>
+    </div>
+  </div>
+</section>
+
+<section class="alterna" id="opiniones">
+  <div class="wrap">
+    <div class="cab">
+      <span class="caps">Opiniones en Google</span>
+      <h2>Lo que dicen quienes ya vinieron</h2>
+    </div>
+    <div class="resenas">
+      <article class="resena">
+        <div class="r-top"><span class="av" style="background:#7B1FA2">F</span><div><b>Francier Zavala</b><small>4 opiniones</small></div><svg class="g" viewBox="0 0 48 48" aria-label="Google"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.8-2.1 5.1-4.4 6.7v5.5h7.1c4.2-3.8 6.6-9.5 6.6-16.2z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.5-3.8-12.2-9H4.5v5.7C8.1 41.1 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.8 28.3c-.4-1.3-.7-2.8-.7-4.3s.3-3 .7-4.3V14H4.5C3 17 2 20.4 2 24s.9 7 2.5 10l7.3-5.7z"/><path fill="#EA4335" d="M24 10.7c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.2 29.9 2 24 2 15.5 2 8.1 6.9 4.5 14l7.3 5.7c1.7-5.2 6.5-9 12.2-9z"/></svg></div>
+        <div class="r-est" aria-label="5 de 5 estrellas">★★★★★</div>
+        <p>Quedé encantada con este lugar. La comida estuvo deliciosa, pero lo que más me gustó fue el trato recibido. Desde que llegamos nos atendieron con mucha amabilidad y siempre estuvieron pendientes de nosotros sin ser invasivos. ¡Muy recomendado!</p>
+      </article>
+      <article class="resena">
+        <div class="r-top"><span class="av" style="background:#455A64">J</span><div><b>José González</b><small>1 opinión</small></div><svg class="g" viewBox="0 0 48 48" aria-label="Google"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.8-2.1 5.1-4.4 6.7v5.5h7.1c4.2-3.8 6.6-9.5 6.6-16.2z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.5-3.8-12.2-9H4.5v5.7C8.1 41.1 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.8 28.3c-.4-1.3-.7-2.8-.7-4.3s.3-3 .7-4.3V14H4.5C3 17 2 20.4 2 24s.9 7 2.5 10l7.3-5.7z"/><path fill="#EA4335" d="M24 10.7c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.2 29.9 2 24 2 15.5 2 8.1 6.9 4.5 14l7.3 5.7c1.7-5.2 6.5-9 12.2-9z"/></svg></div>
+        <div class="r-est" aria-label="5 de 5 estrellas">★★★★★</div>
+        <p>Excelente servicio! Definitivamente volveremos, los meseros y el pizzero tienen mucho carisma con los niños, la comida deliciosa ❤️</p>
+      </article>
+      <article class="resena">
+        <div class="r-top"><span class="av" style="background:#C2185B">A</span><div><b>Allen Turner</b><small>Local Guide · 56 opiniones</small></div><svg class="g" viewBox="0 0 48 48" aria-label="Google"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h11.8c-.5 2.8-2.1 5.1-4.4 6.7v5.5h7.1c4.2-3.8 6.6-9.5 6.6-16.2z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-7.1-5.5c-2 1.3-4.5 2.1-7.4 2.1-5.7 0-10.5-3.8-12.2-9H4.5v5.7C8.1 41.1 15.5 46 24 46z"/><path fill="#FBBC05" d="M11.8 28.3c-.4-1.3-.7-2.8-.7-4.3s.3-3 .7-4.3V14H4.5C3 17 2 20.4 2 24s.9 7 2.5 10l7.3-5.7z"/><path fill="#EA4335" d="M24 10.7c3.2 0 6.1 1.1 8.4 3.3l6.3-6.3C34.9 4.2 29.9 2 24 2 15.5 2 8.1 6.9 4.5 14l7.3 5.7c1.7-5.2 6.5-9 12.2-9z"/></svg></div>
+        <div class="r-est" aria-label="5 de 5 estrellas">★★★★★</div>
+        <p>Pizza came out in about 5 minutes and it was excellent!! Fresh ingredients, great taste and the best service I've had in Cancún!!</p>
+      </article>
+    </div>
+    <div class="centro"><a class="btn btn-borde" href="https://www.google.com/maps/search/?api=1&query=La+Vecchia+Pizza+Plaza+Murano+Canc%C3%BAn" target="_blank" rel="noopener">Ver todas las opiniones en Google</a></div>
+  </div>
+</section>
+
+
+
+<section id="instagram">
+  <div class="wrap">
+    <div class="cab">
+      <span class="caps">Instagram</span>
+      <h2>@lavecchiapizza</h2>
+    </div>
+    <div class="insta">
+      <a href="https://www.instagram.com/lavecchiapizza/" aria-label="Publicación de Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg></a>
+      <a href="https://www.instagram.com/lavecchiapizza/" aria-label="Publicación de Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg></a>
+      <a href="https://www.instagram.com/lavecchiapizza/" aria-label="Publicación de Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg></a>
+      <a href="https://www.instagram.com/lavecchiapizza/" aria-label="Publicación de Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg></a>
+      <a href="https://www.instagram.com/lavecchiapizza/" aria-label="Publicación de Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg></a>
+      <a href="https://www.instagram.com/lavecchiapizza/" aria-label="Publicación de Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg></a>
+    </div>
+    <p class="aviso">Aquí aparecerán tus últimas 6 publicaciones cuando conectemos tu cuenta.</p>
+    <div class="centro"><a class="btn btn-borde" href="https://www.instagram.com/lavecchiapizza/">Síguenos en Instagram</a></div>
+  </div>
+</section>
+
+<section class="alterna" id="visitanos">
+  <div class="wrap visita">
+    <div>
+      <span class="caps">Visítanos</span>
+      <h2>Te esperamos</h2>
+      <dl>
+        <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-6.5-8-12a8 8 0 0 1 16 0c0 5.5-8 12-8 12z"/><circle cx="12" cy="10" r="3"/></svg>Dirección</dt><dd>Plaza Murano, local 5<br>Av. Huayacán, Cancún, Quintana Roo</dd></div>
+        <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Horario</dt><dd>
+          <div class="horas">
+            <span>Lunes a jueves</span><span>1:00 pm – 10:30 pm</span>
+            <span>Viernes y sábado</span><span>1:00 pm – 11:30 pm</span>
+            <span>Domingo</span><span>1:00 pm – 10:00 pm</span>
+          </div></dd></div>
+        <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Pagos</dt><dd>Efectivo, Visa y American Express</dd></div>
+        <div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Contacto</dt><dd>
+          <div class="redes">
+            <a class="r-wa" href="https://wa.me/529981369306?text=Hola%20La%20Vecchia"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>WhatsApp</a>
+            <a class="r-ig" href="https://www.instagram.com/lavecchiapizza/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/></svg>Instagram</a>
+            <a class="r-fb" href="https://www.facebook.com/LaVecchiaPizza/"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 8h3V4h-3c-2.8 0-4 1.7-4 4.3V10H7v4h3v8h4v-8h3l1-4h-4V8.6c0-.4.3-.6.6-.6z"/></svg>Facebook</a>
+          </div>
+        </dd></div>
+      </dl>
+    </div>
+    <a class="mapa" href="https://www.google.com/maps/search/?api=1&query=La+Vecchia+Pizza+Plaza+Murano+Canc%C3%BAn" target="_blank" rel="noopener"><span class="btn btn-blanco">Cómo llegar</span></a>
+  </div>
+</section>
+</main>
+
+<footer class="pie">
+  <a class="logo-pie" href="#inicio"><img src="img/logo.svg" alt="La Vecchia Pizza" width="1810" height="1240"></a>
+  <p>© <span id="y">2026</span> La Vecchia Pizza · Plaza Murano, Cancún</p>
+</footer>
+
+<a class="wa" href="https://wa.me/529981369306?text=Hola%20La%20Vecchia" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4c-1-1.6-1.5-3.3-1.5-5.2C2.2 6.6 6.6 2.2 12 2.2c2.6 0 5.1 1 6.9 2.9 1.8 1.8 2.9 4.3 2.9 6.9 0 5.4-4.4 9.8-9.8 9.8zm8.4-18.2C18.1 1.3 15.1 0 12 0 5.5 0 .2 5.3.2 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.3-1.7c1.7.9 3.7 1.4 5.7 1.4 6.5 0 11.8-5.3 11.8-11.9 0-3.2-1.2-6.1-3.4-8.2z"/></svg>
+</a>
+
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+(function(){var p=document.getElementById('pista');if(!p)return;
+document.querySelector('.flecha.izq').onclick=function(){p.scrollBy({left:-p.clientWidth,behavior:'smooth'})};
+document.querySelector('.flecha.der').onclick=function(){var end=p.scrollLeft+p.clientWidth>=p.scrollWidth-5;p.scrollTo({left:end?0:p.scrollLeft+p.clientWidth,behavior:'smooth'})};})();
+</script>
+</body>
+</html>
