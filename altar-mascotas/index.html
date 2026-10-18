@@ -223,6 +223,16 @@
     <button class="btn ghost" id="more" type="button" hidden>Ver más mascotas</button>
   </section>
 
+  <section class="panel" id="vecchiaTools" hidden aria-labelledby="vtTitle">
+    <h2 id="vtTitle" style="font-family:var(--display);font-weight:400;font-size:22px;margin:0;text-align:center">Descargas para La Vecchia</h2>
+    <p class="hint" style="text-align:center;margin:0">Todas las mascotas que hay en el altar en este momento.</p>
+    <div class="actions">
+      <button class="primary wide" id="dlAltar" type="button">🖼️ Altar completo (imagen)</button>
+      <button class="ghost wide" id="dlNames" type="button">📜 Lista de nombres (imagen)</button>
+      <button class="ghost wide" id="dlCsv" type="button">📊 Lista de nombres (Excel)</button>
+    </div>
+  </section>
+
   <div class="share">
     <button class="sharebtn" id="shareBtn" type="button" aria-label="Compartir el altar">
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
@@ -744,6 +754,7 @@
   }
 
   // ---------- image 2: collective altar ----------
+  let excludeMine = false;
   let others = [];   // every pet in the shared altar, newest first (filled by the Firebase script)
   // Collective layout: 12 nichos (3·4·5) at first; with more pets it adds rows and shrinks the nichos so every pet fits
   const BASE_ROWS = [
@@ -784,7 +795,7 @@
     glow(W / 2, 820, 600, 0.26);
     title(352);
     const TOP = 1340;
-    const mine = pets[0] && pets[0].photo && !placedId ? [pets[0]] : [];
+    const mine = !excludeMine && pets[0] && pets[0].photo && !placedId ? [pets[0]] : [];
     const list = [...mine, ...others];
     const { rows: ROWS, order: ORDER } = layout(Math.max(12, list.length));
     const SHELF = ["#e0347f", "#f59a1b", "#2bb3a3", "#8b4fd1", "#ffc23d"];
@@ -935,6 +946,9 @@
     drawIndividual(); drawCollective();
     const files = [];
     for (const v of list) { const blob = await toBlob(v === "ind" ? cInd : cCol); files.push(new File([blob], fileFor(v), { type: "image/png" })); }
+    return deliver(files);
+  }
+  async function deliver(files) {
     lastFiles = files;
     const canShare = !!(navigator.canShare && navigator.canShare({ files }));
     $("vshare").hidden = !canShare || inApp;
@@ -959,6 +973,68 @@
     try { await navigator.share({ files: lastFiles, title: "Mi altar de mascotas · La Vecchia Pizza" }); } catch (e) {}
   });
   $("saveBoth").addEventListener("click", () => save(["ind", "col"]));
+
+  // ---------- La Vecchia downloads (open the page with ?vecchia) ----------
+  const TREAT_NAME = { croquetas: "Croquetas", pescado: "Pescadito", pelota: "Su pelota", pizza: "Pizza", hueso: "Hueso" };
+  const today = () => new Date().toISOString().slice(0, 10);
+  const oldestFirst = () => [...others].reverse();
+  async function photosReady() { await Promise.all(others.map((o) => (o.photo && o.photo.decode ? o.photo.decode().catch(() => {}) : null))); }
+  function drawNames(c) {
+    ctx = c.getContext("2d"); seed = 777;
+    const list = oldestFirst().map((o) => o.name);
+    backdrop();
+    papelPicado(26, 150, ["#e0347f", "#f59a1b", "#2bb3a3", "#8b4fd1", "#ffc23d"], 0);
+    glow(W / 2, 900, 650, 0.22);
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    ctx.save(); ctx.shadowColor = "rgba(0,0,0,0.7)"; ctx.shadowBlur = 18;
+    ctx.fillStyle = "#fff1dc"; ctx.font = "700 84px 'Dancing Script', cursive"; ctx.fillText("En memoria de", W / 2, 290);
+    ctx.fillStyle = "#ffc23d"; ctx.font = "600 28px 'Work Sans', sans-serif";
+    ctx.fillText(`${list.length} ${list.length === 1 ? "MASCOTA" : "MASCOTAS"} · 27 DE OCTUBRE · DÍA DE LAS MASCOTAS`, W / 2, 345);
+    ctx.restore();
+    const top = 410, bottom = 1700, area = bottom - top, width = 1000;
+    let best = { fs: 0, c: 1 };
+    ctx.font = "700 100px 'Dancing Script', cursive";
+    const maxW = Math.max(1, ...list.map((n) => ctx.measureText(n).width));
+    for (let c = 1; c <= 10; c++) {
+      const rows = Math.max(1, Math.ceil(list.length / c));
+      const fs = Math.min(72, (area / rows) * 0.78, (100 * (width / c) * 0.9) / maxW);
+      if (fs > best.fs + 0.5) best = { fs, c };
+    }
+    const { fs, c: cols } = best, rows = Math.max(1, Math.ceil(list.length / cols)), lh = Math.min(area / rows, fs * 1.35);
+    const y0 = top + (area - rows * lh) / 2 + lh * 0.75, colW = width / cols;
+    ctx.fillStyle = "#fff1dc"; ctx.font = `700 ${fs}px 'Dancing Script', cursive`;
+    list.forEach((n, i) => { const col = Math.floor(i / rows), row = i % rows; ctx.fillText(n, 40 + colW * col + colW / 2, y0 + row * lh); });
+    for (let i = 0; i < 9; i++) if (i < 3 || i > 5) marigold(80 + i * 115, 1790, 34, i);
+    brandFooter(1850); finish();
+  }
+  async function downloadFile(name, blob) {
+    const url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  }
+  if (new URLSearchParams(location.search).has("vecchia")) {
+    $("vecchiaTools").hidden = false;
+    $("dlAltar").addEventListener("click", async () => {
+      if (!others.length) { alert("Todavía no hay mascotas en el altar (o se están cargando)."); return; }
+      await photosReady();
+      excludeMine = true; drawCollective(); excludeMine = false;
+      const blob = await toBlob(cCol); drawCollective(); refreshFrame();
+      deliver([new File([blob], `altar-completo-la-vecchia-${today()}.png`, { type: "image/png" })]);
+    });
+    $("dlNames").addEventListener("click", async () => {
+      if (!others.length) { alert("Todavía no hay mascotas en el altar (o se están cargando)."); return; }
+      const c = document.createElement("canvas"); c.width = W; c.height = H; drawNames(c);
+      const blob = await toBlob(c);
+      deliver([new File([blob], `lista-de-nombres-la-vecchia-${today()}.png`, { type: "image/png" })]);
+    });
+    $("dlCsv").addEventListener("click", () => {
+      if (!others.length) { alert("Todavía no hay mascotas en el altar (o se están cargando)."); return; }
+      const esc = (v) => `"${String(v).replace(/"/g, '""')}"`;
+      const rows = oldestFirst().map((o, i) => [i + 1, o.name, TREAT_NAME[o.treat] || o.treat || "", o.createdAt ? o.createdAt.toLocaleString("es-MX") : ""].map(esc).join(","));
+      const csv = "\ufeff" + ["N°,Nombre,Ofrenda,Fecha", ...rows].join("\r\n");
+      downloadFile(`lista-de-mascotas-la-vecchia-${today()}.csv`, new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    });
+  }
 
   // ---------- bridge with the shared altar (Firebase module below) ----------
   let placedId = null;
@@ -1042,7 +1118,7 @@
       : total === 1 ? "1 mascota en el altar" : `${total.toLocaleString("es-MX")} mascotas en el altar`;
   }
   function feedCanvas() {
-    A.setOthers(recent.map((d) => { const img = new Image(); img.onload = () => A.refresh(); img.src = d.photo; return { id: d.id, name: d.name, treat: d.treat, photo: img }; }));
+    A.setOthers(recent.map((d) => { const img = new Image(); img.onload = () => A.refresh(); img.src = d.photo; return { id: d.id, name: d.name, treat: d.treat, photo: img, createdAt: d.createdAt && d.createdAt.toDate ? d.createdAt.toDate() : null }; }));
   }
   async function loadPage() {
     const q = last ? query(col, orderBy("createdAt", "desc"), startAfter(last), limit(PAGE)) : query(col, orderBy("createdAt", "desc"), limit(PAGE));
