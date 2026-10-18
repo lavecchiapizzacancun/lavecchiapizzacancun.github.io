@@ -60,7 +60,7 @@
   const auth = getAuth(app), db = getFirestore(app), col = collection(db, "mascotas");
   const $ = (id) => document.getElementById(id);
   const PAGE = 60;
-  let last = null, total = 0;
+  let last = null, total = 0, run = 0;
 
   const status = (t) => { $("status").textContent = t; };
   const showTotal = () => status(total === 1 ? "1 mascota en el altar. Toca «Borrar» para quitar una." : `${total} mascotas en el altar. Toca «Borrar» para quitar una.`);
@@ -80,9 +80,10 @@
     });
     el.append(img, nm, dt, del); return el;
   }
-  async function loadPage() {
+  async function loadPage(my = run) {
     const q = last ? query(col, orderBy("createdAt", "desc"), startAfter(last), limit(PAGE)) : query(col, orderBy("createdAt", "desc"), limit(PAGE));
     const snap = await getDocs(q);
+    if (my !== run) return;   // a newer sign-in check started; ignore this stale result
     snap.forEach((s) => $("grid").append(item({ id: s.id, ...s.data() })));
     last = snap.docs[snap.docs.length - 1] || last;
     $("more").hidden = snap.size < PAGE;
@@ -95,11 +96,12 @@
   $("logout").addEventListener("click", () => signOut(auth));
 
   onAuthStateChanged(auth, async (user) => {
+    const my = ++run;
     $("grid").replaceChildren(); last = null; $("more").hidden = true;
     if (!user) { $("login").hidden = false; $("logout").hidden = true; status("Entra con tu cuenta de Google para administrar el altar."); return; }
     $("login").hidden = true; $("logout").hidden = false;
     if (user.email !== ADMIN) { status(`Entraste como ${user.email}. Solo ${ADMIN} puede administrar el altar.`); return; }
-    try { total = (await getCountFromServer(col)).data().count; showTotal(); await loadPage(); }
+    try { const t = (await getCountFromServer(col)).data().count; if (my !== run) return; total = t; showTotal(); await loadPage(my); }
     catch (e) { console.error(e); status("No se pudieron cargar las fotos."); }
   });
 </script>
