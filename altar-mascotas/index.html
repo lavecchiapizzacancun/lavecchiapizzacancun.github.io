@@ -807,6 +807,8 @@
         nicho(cx, r.top, r.w, r.h, p
           ? { img: p.photo, label: p.name.trim() || "Su nombre", plaque: true, palette: PALETTES[(ri + ci) % 4] }
           : { empty: true, label: "Siempre presentes", plaque: true, palette: PALETTES[(ri + ci) % 4] });
+        // each pet's own offering, in a little bowl at the foot of its nicho
+        if (p) bowl(cx + r.w * 0.36, r.top + r.h - r.w * 0.03, r.w * 0.17, p.treat || "croquetas");
       }
       // little candles at both ends of each shelf
       const yB = r.top + r.h - 2, cw = Math.max(8, Math.min(26, r.w * 0.11)), off = r.gap + cw * 0.9;
