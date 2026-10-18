@@ -105,6 +105,8 @@
   .inapp .btn { padding: 9px 18px; font-size: 15px; text-decoration: none; }
   .viewer { position: fixed; inset: 0; z-index: 20; background: rgba(12, 5, 18, 0.96); overflow-y: auto; padding: 16px max(16px, env(safe-area-inset-left, 0px)) 40px; }
   .vtop { position: sticky; top: 0; display: flex; align-items: center; gap: 12px; justify-content: space-between; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 10px 12px 10px 16px; margin: 0 auto 14px; max-width: 460px; }
+  .vbtns { display: flex; flex-direction: column; gap: 8px; flex: 0 0 auto; }
+  .vbtns button { padding: 10px 16px; }
   .vtop p { margin: 0; font-size: 14px; color: var(--muted); }
   .vtop b { color: var(--cream); }
   .vimgs { display: flex; flex-direction: column; gap: 16px; align-items: center; }
@@ -144,8 +146,8 @@
 
 <div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Tus altares">
   <div class="vtop">
-    <p><b>Mantén presionada cada imagen</b> y elige “Descargar imagen” o “Guardar imagen”.</p>
-    <button class="primary" id="vclose" type="button">Listo</button>
+    <p id="vmsg"></p>
+    <div class="vbtns"><button class="ghost" id="vshare" type="button" hidden>Compartir</button><button class="primary" id="vclose" type="button">Listo</button></div>
   </div>
   <div class="vimgs" id="vimgs"></div>
 </div>
@@ -898,27 +900,34 @@
   $("vclose").addEventListener("click", () => { $("viewer").hidden = true; document.body.style.overflow = ""; });
 
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  let lastFiles = [];
   async function save(list) {
     drawIndividual(); drawCollective();
     const files = [];
     for (const v of list) { const blob = await toBlob(v === "ind" ? cInd : cCol); files.push(new File([blob], fileFor(v), { type: "image/png" })); }
-    if (inApp) { showViewer(files); return; }
-    // phones: share sheet (Guardar imagen, Instagram, WhatsApp…)
-    if (isMobile && navigator.canShare && navigator.canShare({ files })) {
-      try { await navigator.share({ files, title: "Mi altar de mascotas · La Vecchia Pizza" }); note("¡Listo! Compártelo en tus historias y etiqueta a @lavecchiapizza."); return; }
-      catch (e) { if (e && e.name === "AbortError") return; }
+    lastFiles = files;
+    const canShare = !!(navigator.canShare && navigator.canShare({ files }));
+    $("vshare").hidden = !canShare || inApp;
+    if (!inApp) {
+      // direct download (Chrome, Safari, computers)
+      try {
+        for (const f of files) {
+          const url = URL.createObjectURL(f), a = document.createElement("a");
+          a.href = url; a.download = f.name; a.rel = "noopener"; document.body.append(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 60000); await wait(700);
+        }
+      } catch (e) { /* the viewer below still lets them save */ }
     }
-    if (isMobile) { showViewer(files); return; }
-    // computers: regular downloads
-    try {
-      for (const f of files) {
-        const url = URL.createObjectURL(f), a = document.createElement("a");
-        a.href = url; a.download = f.name; document.body.append(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 5000); await wait(500);
-      }
-      note(files.length > 1 ? "Listo, se descargaron tus dos altares." : "Listo, se descargó tu altar.");
-    } catch (e) { showViewer(files); }
+    if (isMobile || inApp) {
+      $("vmsg").innerHTML = inApp
+        ? "<b>Mantén presionada cada imagen</b> y elige “Descargar imagen”."
+        : "<b>Revisa tus Descargas o tu Galería.</b> Si no aparecen, mantén presionada cada imagen y elige “Descargar imagen”.";
+      showViewer(files);
+    } else note(files.length > 1 ? "Listo, se descargaron tus dos altares." : "Listo, se descargó tu altar.");
   }
+  $("vshare").addEventListener("click", async () => {
+    try { await navigator.share({ files: lastFiles, title: "Mi altar de mascotas · La Vecchia Pizza" }); } catch (e) {}
+  });
   $("saveBoth").addEventListener("click", () => save(["ind", "col"]));
 
   syncForm(); renderPets(); drawAll();
