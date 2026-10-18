@@ -101,6 +101,14 @@
   .ghost:hover { background: rgba(255, 255, 255, 0.06); }
   .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .actions .wide { grid-column: 1 / -1; font-size: 17px; padding: 15px 20px; }
+  .inapp { position: sticky; top: 0; z-index: 5; margin: -18px calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 14px; padding: 12px 16px; background: var(--rosa); color: #fff; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; font-size: 15px; }
+  .inapp .btn { padding: 9px 18px; font-size: 15px; text-decoration: none; }
+  .viewer { position: fixed; inset: 0; z-index: 20; background: rgba(12, 5, 18, 0.96); overflow-y: auto; padding: 16px max(16px, env(safe-area-inset-left, 0px)) 40px; }
+  .vtop { position: sticky; top: 0; display: flex; align-items: center; gap: 12px; justify-content: space-between; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 10px 12px 10px 16px; margin: 0 auto 14px; max-width: 460px; }
+  .vtop p { margin: 0; font-size: 14px; color: var(--muted); }
+  .vtop b { color: var(--cream); }
+  .vimgs { display: flex; flex-direction: column; gap: 16px; align-items: center; }
+  .vimgs img { width: 100%; max-width: 460px; border-radius: 16px; display: block; -webkit-touch-callout: default; }
   .note { font-size: 13px; color: var(--muted); text-align: center; margin: 0; min-height: 1.5em; }
 
   .pets { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -129,6 +137,19 @@
 <body>
 
 
+<div class="inapp" id="inapp" hidden>
+  <b>Para descargar tus altares, abre esta página en tu navegador.</b>
+  <a class="btn primary" id="openChrome" href="#">Abrir en Chrome</a>
+</div>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-label="Tus altares">
+  <div class="vtop">
+    <p><b>Mantén presionada cada imagen</b> y elige “Descargar imagen” o “Guardar imagen”.</p>
+    <button class="primary" id="vclose" type="button">Listo</button>
+  </div>
+  <div class="vimgs" id="vimgs"></div>
+</div>
+
 <div class="wrap">
   <header>
     <div class="date"><b>27 de octubre</b> Día de las mascotas</div>
@@ -156,7 +177,6 @@
     <div class="field">
       <span class="label">¿Qué le dejas de ofrenda?</span>
       <div class="chips" role="radiogroup" aria-label="Ofrenda">
-        <label class="chip"><input type="radio" name="treat" value="hueso"><span>🦴 Hueso</span></label>
         <label class="chip"><input type="radio" name="treat" value="croquetas"><span>🥣 Croquetas</span></label>
         <label class="chip"><input type="radio" name="treat" value="pescado"><span>🐟 Pescadito</span></label>
         <label class="chip"><input type="radio" name="treat" value="pelota"><span>🎾 Su pelota</span></label>
@@ -167,8 +187,6 @@
       <div class="btn ghost wide pickwrap"><span id="pickBtn">📷 Subir su foto</span><input type="file" class="picker" accept="image/*" aria-label="Subir la foto de tu mascota"></div>
       <button class="ghost wide" id="sample" type="button">🐱 Probar con una mascota de ejemplo</button>
       <button class="primary wide" id="saveBoth" type="button">Descargar mis 2 altares</button>
-      <button class="ghost" id="save" type="button">Solo esta imagen</button>
-      <button class="ghost" id="hold" type="button">Ver para compartir</button>
     </div>
     <p class="note" id="note">Imágenes de 1080 × 1920, listas para historias de Instagram y WhatsApp.</p>
   </div>
@@ -207,7 +225,7 @@
 
   // ---------- state ----------
   let uid = 1;
-  const newPet = (o = {}) => ({ id: uid++, name: "", msg: "Tu amor dejó huellas que nunca se borrarán.", treat: "hueso", photo: null, url: "", example: false, ...o });
+  const newPet = (o = {}) => ({ id: uid++, name: "", msg: "Tu amor dejó huellas que nunca se borrarán.", treat: "croquetas", photo: null, url: "", example: false, ...o });
   const pets = [newPet()];
   let sel = 0, view = "ind", shareMode = false;
 
@@ -758,7 +776,7 @@
     contact(110, 1695, 120, 22); contact(W - 110, 1695, 120, 22);
     [[270, 1520, 92], [400, 1500, 70], [W - 400, 1500, 70], [W - 270, 1520, 92]].forEach(([x, y, h]) => { candle(x, y, 34, h, "#fff1dc"); reflect(x, y, 100, 0.3); });
     pizzaBoard(W / 2, 1690, 190, 72);
-    bowl(260, 1730, 82, pets[0] ? pets[0].treat : "hueso");
+    bowl(260, 1730, 82, pets[0] ? pets[0].treat : "croquetas");
     panDeMuerto(820, 1725, 66);
     clayPot(150, 1800, 64, "#e0347f"); clayPot(W - 150, 1800, 64, "#2bb3a3");
     brandFooter(1840);
@@ -869,24 +887,41 @@
   const fileFor = (v) => (v === "ind" ? `altar-${slug(pets[sel].name)}.png` : "altar-colectivo-la-vecchia.png");
   const toBlob = (c) => new Promise((res) => c.toBlob(res, "image/png"));
 
-  $("hold").addEventListener("click", () => {
-    shareMode = !shareMode; drawAll();
-    $("hold").textContent = shareMode ? "Volver a editar" : "Ver para compartir";
-    note(shareMode ? "Mantén presionada la imagen para guardarla o compartirla. Cambia de pestaña para la otra." : "Cada imagen mide 1080 × 1920, lista para historias de Instagram y WhatsApp.");
-  });
-  function fallback() {
-    if (!shareMode) $("hold").click();
+  const UA = navigator.userAgent || "";
+  const inApp = /Instagram|FBAN|FBAV|FB_IAB|FBIOS|Line\/|TikTok|musical_ly|Snapchat|Twitter/i.test(UA);
+  const isAndroid = /Android/i.test(UA), isMobile = /Android|iPhone|iPad|iPod/i.test(UA);
+  // banner for Instagram / Facebook in-app browsers, where downloads don't work
+  if (inApp) {
+    const b = $("inapp"); b.hidden = false;
+    const link = $("openChrome");
+    if (isAndroid) link.href = "intent://" + location.host + location.pathname + "#Intent;scheme=https;package=com.android.chrome;end";
+    else { link.removeAttribute("href"); link.textContent = "Toca ··· arriba y elige “Abrir en el navegador”"; }
   }
+  // viewer: big images you can long-press to save — works everywhere
+  let viewerUrls = [];
+  function showViewer(files) {
+    viewerUrls.forEach((u) => URL.revokeObjectURL(u)); viewerUrls = [];
+    const box = $("vimgs"); box.replaceChildren();
+    files.forEach((f, i) => {
+      const u = URL.createObjectURL(f); viewerUrls.push(u);
+      const img = new Image(); img.src = u; img.alt = i === 0 && files.length > 1 ? "Tu altar" : "Altar"; box.append(img);
+    });
+    $("viewer").hidden = false; document.body.style.overflow = "hidden"; $("viewer").scrollTop = 0;
+  }
+  $("vclose").addEventListener("click", () => { $("viewer").hidden = true; document.body.style.overflow = ""; });
+
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   async function save(list) {
     drawIndividual(); drawCollective();
     const files = [];
     for (const v of list) { const blob = await toBlob(v === "ind" ? cInd : cCol); files.push(new File([blob], fileFor(v), { type: "image/png" })); }
-    // phones: open the share sheet (Guardar imagen, Instagram, WhatsApp…)
-    if (navigator.canShare && navigator.canShare({ files })) {
+    if (inApp) { showViewer(files); return; }
+    // phones: share sheet (Guardar imagen, Instagram, WhatsApp…)
+    if (isMobile && navigator.canShare && navigator.canShare({ files })) {
       try { await navigator.share({ files, title: "Mi altar de mascotas · La Vecchia Pizza" }); note("¡Listo! Compártelo en tus historias y etiqueta a @lavecchiapizza."); return; }
       catch (e) { if (e && e.name === "AbortError") return; }
     }
+    if (isMobile) { showViewer(files); return; }
     // computers: regular downloads
     try {
       for (const f of files) {
@@ -895,9 +930,8 @@
         setTimeout(() => URL.revokeObjectURL(url), 5000); await wait(500);
       }
       note(files.length > 1 ? "Listo, se descargaron tus dos altares." : "Listo, se descargó tu altar.");
-    } catch (e) { fallback(); }
+    } catch (e) { showViewer(files); }
   }
-  $("save").addEventListener("click", () => save([view]));
   $("saveBoth").addEventListener("click", () => save(["ind", "col"]));
 
   syncForm(); renderPets(); drawAll();
