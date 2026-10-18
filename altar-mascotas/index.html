@@ -140,6 +140,13 @@
   .nicho .nm { font-family: var(--script); font-weight: 700; font-size: 19px; line-height: 1.1; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nicho.new .ph { box-shadow: 0 0 0 3px var(--marigold-2), 0 0 24px rgba(255, 194, 61, 0.7); }
   #place:disabled { opacity: 0.6; cursor: default; }
+  .share { text-align: center; align-items: center; }
+  .share h2 { font-family: var(--display); font-weight: 400; font-size: 24px; margin: 0; }
+  .share .hint { margin: -6px 0 0; }
+  .sharebtns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+  .sharebtns .btn { text-decoration: none; }
+  .wa-btn { background: #25d366; color: #06290f; }
+  .fb-btn { background: #1877f2; color: #fff; }
   footer { margin-top: 18px; text-align: center; color: var(--muted); font-size: 13px; }
   footer b { color: var(--cream); font-weight: 600; }
 </style>
@@ -218,6 +225,17 @@
     <p class="hint" id="wallCount">Cargando las mascotas del altar…</p>
     <div class="nichos" id="nichos"></div>
     <button class="btn ghost" id="more" type="button" hidden>Ver más mascotas</button>
+  </section>
+
+  <section class="panel share" aria-labelledby="shareTitle">
+    <h2 id="shareTitle">Comparte el altar</h2>
+    <p class="hint">Invita a tu familia y amigos a poner a sus mascotas en el altar de La Vecchia.</p>
+    <div class="sharebtns">
+      <a class="btn wa-btn" href="https://wa.me/?text=%F0%9F%95%AF%EF%B8%8F%2027%20de%20octubre%20%C2%B7%20D%C3%ADa%20de%20las%20mascotas%20%F0%9F%90%BE%0AEn%20La%20Vecchia%20Pizza%20hicimos%20un%20altar%20para%20recordar%20a%20nuestros%20compa%C3%B1eros%20que%20ya%20no%20est%C3%A1n.%20Sube%20la%20foto%20de%20tu%20mascota%2C%20ponla%20en%20el%20altar%20colectivo%20y%20descarga%20su%20altar%20para%20tus%20historias%3A%0Ahttps%3A//lavecchiapizzacancun.github.io/altar-mascotas/" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="btn fb-btn" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Flavecchiapizzacancun.github.io%2Faltar-mascotas%2F" target="_blank" rel="noopener">Facebook</a>
+      <button class="btn ghost" id="copyLink" type="button">Copiar enlace</button>
+      <button class="btn ghost" id="shareMore" type="button" hidden>Más opciones…</button>
+    </div>
   </section>
 
   <footer><a href="/" style="color:var(--marigold-2);font-weight:600">← Volver a La Vecchia Pizza</a><br><br><b>La Vecchia Pizza</b> · Alta cucina italiana<br>Av. Huayacán, Plaza Murano – Cancún, Quintana Roo</footer>
@@ -976,6 +994,17 @@
     },
   };
 
+  // share section
+  const SHARE_URL = "https://lavecchiapizzacancun.github.io/altar-mascotas/";
+  $("copyLink").addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(SHARE_URL); $("copyLink").textContent = "¡Enlace copiado!"; }
+    catch (e) { prompt("Copia este enlace:", SHARE_URL); }
+    setTimeout(() => { $("copyLink").textContent = "Copiar enlace"; }, 2500);
+  });
+  if (navigator.share) {
+    $("shareMore").hidden = false;
+    $("shareMore").addEventListener("click", () => navigator.share({ title: "Altar de mascotas · La Vecchia Pizza", text: "Pon a tu mascota en el altar de La Vecchia 🕯️🐾", url: SHARE_URL }).catch(() => {}));
+  }
   syncForm(); renderPets(); drawAll();
   setTimeout(() => { if ($("wallCount").textContent.startsWith("Cargando")) $("wallCount").textContent = "No pudimos cargar el altar colectivo. Revisa tu internet y recarga la página."; }, 12000);
   logo.onload = redraw; bgImg.onload = redraw;
