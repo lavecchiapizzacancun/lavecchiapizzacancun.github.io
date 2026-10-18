@@ -197,6 +197,7 @@
       <div class="btn ghost wide pickwrap"><span id="pickBtn">📷 Subir su foto</span><input type="file" class="picker" accept="image/*" aria-label="Subir la foto de tu mascota"></div>
       <button class="primary wide" id="place" type="button">🕯️ Poner en el altar colectivo</button>
       <button class="ghost wide" id="saveBoth" type="button">⬇️ Descargar mis 2 altares</button>
+      <button class="ghost wide add" id="another" type="button" hidden>➕ Poner otra mascota</button>
     </div>
     <p class="note" id="note">Al ponerla en el altar colectivo, su foto y su nombre quedan a la vista de todos.</p>
   </div>
@@ -928,6 +929,12 @@
     setOthers(arr) { others = arr; redraw(); },
     refresh() { redraw(); },
     setPlaced(id) { placedId = id; },
+    addOther(o) { others = [o, ...others.filter((x) => x.id !== o.id)].slice(0, 12); },
+    reset() {
+      pets[sel] = newPet(); placedId = null; syncForm(); setView("ind"); redraw();
+      $("stage").scrollIntoView({ behavior: "smooth", block: "start" });
+      note("Sube la foto de tu otra mascota y escribe su nombre.");
+    },
     exportPet() {
       const p = pets[sel];
       if (!p.photo) return { error: "Primero sube la foto de tu mascota." };
@@ -1008,6 +1015,7 @@
   $("more").addEventListener("click", async () => { $("more").disabled = true; try { await loadPage(); } finally { $("more").disabled = false; } });
 
   const place = $("place");
+  $("another").addEventListener("click", () => { $("another").hidden = true; A.reset(); place.disabled = false; place.textContent = "🕯️ Poner en el altar colectivo"; });
   window.addEventListener("altar:changed", () => { place.disabled = false; place.textContent = "🕯️ Poner en el altar colectivo"; });
   place.addEventListener("click", async () => {
     const d = A.exportPet();
@@ -1019,6 +1027,9 @@
       $("nichos").prepend(card({ ...d, id: ref.id }, true));
       total += 1; showCount();
       place.textContent = "✓ Ya está en el altar";
+      const im = new Image(); im.onload = () => A.refresh(); im.src = d.photo;
+      A.addOther({ id: ref.id, name: d.name, treat: d.treat, photo: im });
+      $("another").hidden = false;
       A.note(`¡${d.name} ya está en el altar colectivo! Ahora descarga tus 2 altares para compartirlos.`);
     } catch (e) {
       console.error(e);
