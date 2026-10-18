@@ -883,7 +883,12 @@
   if (inApp) {
     const b = $("inapp"); b.hidden = false;
     const link = $("openChrome");
-    if (isAndroid) link.href = "intent://" + location.host + location.pathname + "#Intent;scheme=https;package=com.android.chrome;end";
+    if (isAndroid) {
+      link.href = "intent://" + location.host + location.pathname + "#Intent;scheme=https;package=com.android.chrome;end";
+      // try to jump to Chrome right away (only once per visit)
+      let tried = false; try { tried = sessionStorage.getItem("triedChrome") === "1"; sessionStorage.setItem("triedChrome", "1"); } catch (e) {}
+      if (!tried) setTimeout(() => { location.href = link.href; }, 400);
+    }
     else { link.removeAttribute("href"); link.textContent = "Toca ··· arriba y elige “Abrir en el navegador”"; }
   }
   // viewer: big images you can long-press to save — works everywhere
