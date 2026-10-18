@@ -669,14 +669,14 @@
     ctx.restore();
     // pink rosette at the top of the crest + marigolds on the shoulders
     marigold(cx, bodyTop - crestR * 0.05, w * 0.07, 0);
-    marigold(x + w * 0.04, bodyTop + w * 0.5, w * 0.07, 1); marigold(x + w * 0.96, bodyTop + w * 0.5, w * 0.07, 2);
+    if (w >= 70) { marigold(x + w * 0.04, bodyTop + w * 0.5, w * 0.07, 1); marigold(x + w * 0.96, bodyTop + w * 0.5, w * 0.07, 2); }
     // name plaque inside the frame
     if (o.plaque) {
       const py = top + h - plaqueH - w * 0.06, px = x + w * 0.12, pw = w * 0.76;
       ctx.fillStyle = "#fff1dc"; roundRect(px, py, pw, plaqueH, plaqueH * 0.25); ctx.fill();
       ctx.strokeStyle = pal[1]; ctx.lineWidth = Math.max(2, w * 0.012); roundRect(px + w * 0.015, py + w * 0.015, pw - w * 0.03, plaqueH - w * 0.03, plaqueH * 0.2); ctx.stroke();
       ctx.fillStyle = "#5a1d0b"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      fitFont(o.label, "'Dancing Script', cursive", 700, plaqueH * 0.72, 16, pw * 0.86);
+      fitFont(o.label, "'Dancing Script', cursive", 700, plaqueH * 0.72, 7, pw * 0.86);
       ctx.fillText(o.label, cx, py + plaqueH * 0.54); ctx.textBaseline = "alphabetic";
     }
   }
@@ -734,13 +734,38 @@
   }
 
   // ---------- image 2: collective altar ----------
-  const ROWS = [
+  let others = [];   // every pet in the shared altar, newest first (filled by the Firebase script)
+  // Collective layout: 12 nichos (3·4·5) at first; with more pets it adds rows and shrinks the nichos so every pet fits
+  const BASE_ROWS = [
     { n: 3, w: 240, h: 340, top: 380, gap: 54 },
     { n: 4, w: 210, h: 305, top: 752, gap: 30 },
     { n: 5, w: 186, h: 275, top: 1090, gap: 16 },
   ];
-  let others = [];   // most recent pets from the shared altar (filled by the Firebase script)
-  const ORDER = [[0, 1], [0, 0], [0, 2], [1, 1], [1, 2], [1, 0], [1, 3], [2, 2], [2, 1], [2, 3], [2, 0], [2, 4]];
+  const BASE_ORDER = [[0, 1], [0, 0], [0, 2], [1, 1], [1, 2], [1, 0], [1, 3], [2, 2], [2, 1], [2, 3], [2, 0], [2, 4]];
+  function layout(N) {
+    if (N <= 12) return { rows: BASE_ROWS, order: BASE_ORDER };
+    const AREA_TOP = 400, AREA_BOT = 1360, SPAN = 1040, RATIO = 1.42, PITCH = 1.07;
+    let best = null;
+    for (let R = 3; R <= 60; R++) {
+      const options = [];
+      const k = Math.ceil((N - (R * (R - 1)) / 2) / R);
+      if (k >= 2) options.push(Array.from({ length: R }, (_, r) => k + r));
+      options.push(Array.from({ length: R }, () => Math.ceil(N / R)));
+      for (const counts of options) {
+        const cmax = Math.max(...counts);
+        const w = Math.min(SPAN / (cmax * 1.1), (AREA_BOT - AREA_TOP) / (R * RATIO * PITCH));
+        if (!best || w > best.w + 0.01) best = { w, counts };
+      }
+    }
+    const { w, counts } = best, h = w * RATIO, R = counts.length;
+    const rows = counts.map((n, r) => ({ n, w, h, gap: w * 0.1, top: AREA_BOT - h - (R - 1 - r) * h * PITCH }));
+    const order = [];
+    rows.forEach((row, ri) => {
+      const idx = Array.from({ length: row.n }, (_, c) => c).sort((a, b) => Math.abs(a - (row.n - 1) / 2) - Math.abs(b - (row.n - 1) / 2) || a - b);
+      idx.forEach((ci) => order.push([ri, ci]));
+    });
+    return { rows, order };
+  }
   function drawCollective() {
     ctx = cCol.getContext("2d"); seed = 4242;
     backdrop();
@@ -749,17 +774,21 @@
     glow(W / 2, 820, 600, 0.26);
     title(352);
     const TOP = 1340;
+    const mine = pets[0] && pets[0].photo && !placedId ? [pets[0]] : [];
+    const list = [...mine, ...others];
+    const { rows: ROWS, order: ORDER } = layout(Math.max(12, list.length));
+    const SHELF = ["#e0347f", "#f59a1b", "#2bb3a3", "#8b4fd1", "#ffc23d"];
     // stepped altar structure behind the nichos
     ROWS.forEach((r, i) => {
-      const span = r.n * r.w + (r.n - 1) * r.gap + 70, x0 = (W - span) / 2, y = r.top + r.h;
+      const pad = Math.min(70, r.w * 0.3), span = r.n * r.w + (r.n - 1) * r.gap + pad, x0 = (W - span) / 2, y = r.top + r.h;
       ctx.fillStyle = "rgba(40,16,6,0.88)"; ctx.fillRect(x0, r.top + r.h * 0.45, span, r.h * 0.55 + 6);
-      if (i < 2) {
-        const c = ["#e0347f", "#f59a1b"][i];
-        ctx.fillStyle = "#4a2410"; ctx.fillRect(x0 - 20, y - 4, span + 40, 34);
-        ctx.fillStyle = c; ctx.fillRect(x0 - 20, y - 4, span + 40, 14);
-        const nT = Math.round((span + 40) / 30);
-        ctx.beginPath(); ctx.moveTo(x0 - 20, y + 10);
-        for (let k = 0; k <= nT; k++) ctx.lineTo(x0 - 20 + (k / nT) * (span + 40), y + (k % 2 ? 34 : 10));
+      if (i < ROWS.length - 1) {
+        const c = SHELF[i % SHELF.length], sh = Math.max(10, Math.min(34, r.w * 0.14)), ex = Math.min(20, r.w * 0.08);
+        ctx.fillStyle = "#4a2410"; ctx.fillRect(x0 - ex, y - 4, span + ex * 2, sh);
+        ctx.fillStyle = c; ctx.fillRect(x0 - ex, y - 4, span + ex * 2, sh * 0.42);
+        const nT = Math.max(4, Math.round((span + ex * 2) / Math.max(10, Math.min(30, r.w * 0.13))));
+        ctx.beginPath(); ctx.moveTo(x0 - ex, y - 4 + sh * 0.42);
+        for (let k = 0; k <= nT; k++) ctx.lineTo(x0 - ex + (k / nT) * (span + ex * 2), y - 4 + (k % 2 ? sh : sh * 0.42));
         ctx.closePath(); ctx.fill();
       }
     });
@@ -770,7 +799,6 @@
     // nichos: the visitor's pets fill the most visible spots first; free spots get candles and flowers
     const slots = {};
     ORDER.forEach(([ri, ci], k) => { slots[ri + "-" + ci] = k; });
-    const list = [pets[0], ...others.filter((o) => o.id !== placedId)].slice(0, 12);
     ROWS.forEach((r, ri) => {
       const span = r.n * r.w + (r.n - 1) * r.gap, x0 = (W - span) / 2;
       for (let ci = 0; ci < r.n; ci++) {
@@ -781,8 +809,8 @@
           : { empty: true, label: "Siempre presentes", plaque: true, palette: PALETTES[(ri + ci) % 4] });
       }
       // little candles at both ends of each shelf
-      const yB = r.top + r.h + (ri < 2 ? -2 : 4);
-      if (ri < 2) { candle(x0 - 22, yB, 26, 60 + ri * 10, "#fff1dc"); candle(x0 + span + 22, yB, 26, 60 + ri * 10, "#fff1dc"); }
+      const yB = r.top + r.h - 2, cw = Math.max(8, Math.min(26, r.w * 0.11)), off = r.gap + cw * 0.9;
+      if (ri < ROWS.length - 1 && x0 - off > 12) { candle(x0 - off, yB, cw, cw * 2.4, "#fff1dc"); candle(x0 + span + off, yB, cw, cw * 2.4, "#fff1dc"); }
     });
     // table offerings
     scatterPetals(1560, 1840, 70);
@@ -929,7 +957,7 @@
     setOthers(arr) { others = arr; redraw(); },
     refresh() { redraw(); },
     setPlaced(id) { placedId = id; },
-    addOther(o) { others = [o, ...others.filter((x) => x.id !== o.id)].slice(0, 12); },
+    addOther(o) { others = [o, ...others.filter((x) => x.id !== o.id)]; },
     reset() {
       pets[sel] = newPet(); placedId = null; syncForm(); setView("ind"); redraw();
       $("stage").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -979,7 +1007,7 @@
   const col = collection(db, "mascotas");
   const A = window.__altar;
   const $ = (id) => document.getElementById(id);
-  const PAGE = 48;
+  const PAGE = 100;
   let last = null, total = 0, recent = [];
 
   function card(d, isNew) {
@@ -994,25 +1022,25 @@
       : total === 1 ? "1 mascota en el altar" : `${total.toLocaleString("es-MX")} mascotas en el altar`;
   }
   function feedCanvas() {
-    A.setOthers(recent.slice(0, 11).map((d) => { const img = new Image(); img.onload = () => A.refresh(); img.src = d.photo; return { id: d.id, name: d.name, treat: d.treat, photo: img }; }));
+    A.setOthers(recent.map((d) => { const img = new Image(); img.onload = () => A.refresh(); img.src = d.photo; return { id: d.id, name: d.name, treat: d.treat, photo: img }; }));
   }
   async function loadPage() {
     const q = last ? query(col, orderBy("createdAt", "desc"), startAfter(last), limit(PAGE)) : query(col, orderBy("createdAt", "desc"), limit(PAGE));
     const snap = await getDocs(q);
-    snap.forEach((doc) => { const d = { id: doc.id, ...doc.data() }; $("nichos").append(card(d)); if (recent.length < 11) recent.push(d); });
+    snap.forEach((doc) => { const d = { id: doc.id, ...doc.data() }; $("nichos").append(card(d)); recent.push(d); });
     last = snap.docs[snap.docs.length - 1] || last;
-    $("more").hidden = snap.size < PAGE;
+    return snap.size === PAGE;
   }
   async function start() {
     try {
       total = (await getCountFromServer(col)).data().count; showCount();
-      await loadPage(); feedCanvas();
+      while (await loadPage()) { /* keep loading until every pet is in */ }
+      feedCanvas();
     } catch (e) {
       console.error(e);
       $("wallCount").textContent = "El altar colectivo se está preparando. Vuelve en un ratito.";
     }
   }
-  $("more").addEventListener("click", async () => { $("more").disabled = true; try { await loadPage(); } finally { $("more").disabled = false; } });
 
   const place = $("place");
   $("another").addEventListener("click", () => { $("another").hidden = true; A.reset(); place.disabled = false; place.textContent = "🕯️ Poner en el altar colectivo"; });
