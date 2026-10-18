@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Administrar altar · La Vecchia Pizza</title>
+<link rel="icon" href="../img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yeseva+One&family=Dancing+Script:wght@700&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+  :root { --night: #1b0c26; --panel: #321a48; --line: rgba(255, 214, 153, 0.18); --cream: #fff1dc; --muted: #d9c3e6; --marigold: #f59a1b; --rosa: #e0347f; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--night); color: var(--cream); font-family: "Work Sans", system-ui, sans-serif; padding: 20px max(16px, env(safe-area-inset-left, 0px)) 40px; }
+  .wrap { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+  h1 { font-family: "Yeseva One", Georgia, serif; font-weight: 400; font-size: 30px; margin: 0; text-align: center; }
+  p { margin: 0; color: var(--muted); text-align: center; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; }
+  button { font: inherit; font-weight: 600; border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; }
+  .primary { background: var(--marigold); color: #2a1300; }
+  .ghost { background: transparent; color: var(--cream); border: 1px solid var(--line); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+  .item { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .item img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 10px; display: block; }
+  .item .nm { font-family: "Dancing Script", cursive; font-size: 22px; line-height: 1.1; text-align: center; overflow-wrap: anywhere; }
+  .item .dt { font-size: 12px; color: var(--muted); }
+  .del { background: var(--rosa); color: #fff; padding: 8px 14px; font-size: 14px; width: 100%; }
+  .del:disabled { opacity: 0.5; }
+  [hidden] { display: none !important; }
+  a { color: var(--marigold); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Administrar el altar colectivo</h1>
+  <p id="status">Cargando…</p>
+  <div class="bar">
+    <button class="primary" id="login" type="button" hidden>Entrar con Google</button>
+    <button class="ghost" id="logout" type="button" hidden>Salir</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="bar"><button class="ghost" id="more" type="button" hidden>Ver más</button></div>
+  <p><a href="./">← Ir al altar</a></p>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, query, orderBy, limit, startAfter, deleteDoc, doc, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const ADMIN = "vm.arianny@gmail.com";
+  const app = initializeApp({
+    apiKey: "AIzaSyDguqiLn-WNAygdAK0vRqqeRIvLxRH08hQ",
+    authDomain: "altar-la-vecchia.firebaseapp.com",
+    projectId: "altar-la-vecchia",
+    storageBucket: "altar-la-vecchia.firebasestorage.app",
+    messagingSenderId: "706397801585",
+    appId: "1:706397801585:web:0ed12807e397d26ccb5fd0",
+  });
+  const auth = getAuth(app), db = getFirestore(app), col = collection(db, "mascotas");
+  const $ = (id) => document.getElementById(id);
+  const PAGE = 60;
+  let last = null, total = 0;
+
+  const status = (t) => { $("status").textContent = t; };
+  const showTotal = () => status(total === 1 ? "1 mascota en el altar. Toca «Borrar» para quitar una." : `${total} mascotas en el altar. Toca «Borrar» para quitar una.`);
+
+  function item(d) {
+    const el = document.createElement("div"); el.className = "item";
+    const img = document.createElement("img"); img.src = d.photo; img.alt = d.name;
+    const nm = document.createElement("div"); nm.className = "nm"; nm.textContent = d.name;
+    const dt = document.createElement("div"); dt.className = "dt";
+    dt.textContent = d.createdAt ? d.createdAt.toDate().toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" }) : "";
+    const del = document.createElement("button"); del.className = "del"; del.type = "button"; del.textContent = "Borrar";
+    del.addEventListener("click", async () => {
+      if (!confirm(`¿Borrar a «${d.name}» del altar? No se puede deshacer.`)) return;
+      del.disabled = true; del.textContent = "Borrando…";
+      try { await deleteDoc(doc(db, "mascotas", d.id)); el.remove(); total -= 1; showTotal(); }
+      catch (e) { console.error(e); del.disabled = false; del.textContent = "Borrar"; alert("No se pudo borrar. Revisa que entraste con " + ADMIN + "."); }
+    });
+    el.append(img, nm, dt, del); return el;
+  }
+  async function loadPage() {
+    const q = last ? query(col, orderBy("createdAt", "desc"), startAfter(last), limit(PAGE)) : query(col, orderBy("createdAt", "desc"), limit(PAGE));
+    const snap = await getDocs(q);
+    snap.forEach((s) => $("grid").append(item({ id: s.id, ...s.data() })));
+    last = snap.docs[snap.docs.length - 1] || last;
+    $("more").hidden = snap.size < PAGE;
+  }
+  $("more").addEventListener("click", () => loadPage());
+  $("login").addEventListener("click", async () => {
+    try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+    catch (e) { console.error(e); status("No se pudo entrar: " + (e.code || e.message)); }
+  });
+  $("logout").addEventListener("click", () => signOut(auth));
+
+  onAuthStateChanged(auth, async (user) => {
+    $("grid").replaceChildren(); last = null; $("more").hidden = true;
+    if (!user) { $("login").hidden = false; $("logout").hidden = true; status("Entra con tu cuenta de Google para administrar el altar."); return; }
+    $("login").hidden = true; $("logout").hidden = false;
+    if (user.email !== ADMIN) { status(`Entraste como ${user.email}. Solo ${ADMIN} puede administrar el altar.`); return; }
+    try { total = (await getCountFromServer(col)).data().count; showTotal(); await loadPage(); }
+    catch (e) { console.error(e); status("No se pudieron cargar las fotos."); }
+  });
+</script>
+</body>
+</html>
