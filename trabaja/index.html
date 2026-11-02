@@ -95,7 +95,7 @@ footer{border-top:1px solid var(--linea);padding-block:28px;text-align:center;co
         <p class="intro">Si te gusta la cocina italiana y trabajar en equipo, queremos conocerte. Envíanos tu currículum.</p>
       </div>
       <ul class="vacantes" id="lista"></ul>
-      <p class="nota">Adjunta tu currículum (PDF, Word o foto) al correo o por WhatsApp y te contactamos.</p>
+      <p class="nota">Adjunta tu currículum (PDF, Word o foto) por WhatsApp o al correo.</p>
     </div>
     <img class="anuncio" src="anuncio.jpg" alt="Anuncio: La Vecchia Pizza solicita Cocinero" width="900" height="1599">
   </div>
@@ -111,12 +111,6 @@ footer{border-top:1px solid var(--linea);padding-block:28px;text-align:center;co
   var filas = document.getElementById("vacantes").textContent.split("\n")
     .map(function (l) { return l.trim(); }).filter(Boolean);
 
-  function gmail(puesto) {
-    var asunto = "Postulación: " + puesto;
-    var cuerpo = "Hola La Vecchia, me interesa la vacante de " + puesto + ". Adjunto mi currículum.\n\nNombre:\nTeléfono:\n";
-    return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(CORREO) +
-      "&su=" + encodeURIComponent(asunto) + "&body=" + encodeURIComponent(cuerpo);
-  }
 
   if (!filas.length) {
     lista.outerHTML = '<div class="vacio">Por ahora no tenemos vacantes abiertas, pero puedes enviarnos tu currículum a <b>' + CORREO + '</b>.</div>';
@@ -130,14 +124,12 @@ footer{border-top:1px solid var(--linea);padding-block:28px;text-align:center;co
     li.innerHTML =
       '<small>Solicitamos</small><h2></h2>' + (desc ? '<p></p>' : '') +
       '<div class="acciones">' +
-        '<a class="btn btn-oxido" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>Enviar por Gmail</a>' +
         '<a class="btn btn-wa wa-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Enviar por WhatsApp</a>' +
         '<button class="btn btn-borde" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar correo</span></button>' +
       '</div>' +
       '<p class="correo">Correo: <b>' + CORREO + '</b></p>';
     li.querySelector("h2").textContent = puesto;
     if (desc) li.querySelector("p").textContent = desc;
-    li.querySelector("a").href = gmail(puesto);
     li.querySelector(".wa-link").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Hola La Vecchia, me interesa la vacante de " + puesto + ". Les envío mi currículum.");
     var b = li.querySelector("button"), t = b.querySelector("span");
     b.addEventListener("click", function () {
