@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trabaja con nosotros · La Vecchia Pizza</title>
+<meta name="description" content="Vacantes en La Vecchia Pizza, Plaza Murano, Cancún. Envíanos tu currículum.">
+<link rel="icon" href="../img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!--
+  ✏️ VACANTES — para cambiar los puestos, edita SOLO las líneas de abajo.
+  Una vacante por renglón:   Puesto | Descripción corta
+  · Para QUITAR una vacante: borra su renglón.
+  · Para AGREGAR otra: escribe un renglón nuevo, por ejemplo:   Mesero | Turno vespertino
+  · Si no queda ningún renglón, la página dice que por ahora no hay vacantes.
+-->
+<script id="vacantes" type="text/plain">
+Cocinero | Con experiencia en cocina
+</script>
+
+<style>
+:root{
+  --blanco:#FFFFFF; --suave:#F7F6F4; --texto:#22201E; --gris:#55504B; --linea:#E6E1DB;
+  --oxido:#B5612C; --oxido-2:#97501F;
+  --serif:Lora, Georgia, "Times New Roman", serif;
+  --sans:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--suave);color:var(--texto);font:400 18px/1.6 var(--sans)}
+a{color:inherit}
+img{display:block;max-width:100%}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:20px}
+.caps{font:700 13px/1 var(--sans);letter-spacing:.2em;text-transform:uppercase}
+:focus-visible{outline:2px solid var(--oxido);outline-offset:3px}
+
+.top{background:var(--texto);color:#fff}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;padding-block:14px;gap:16px}
+.top img{height:54px;width:auto}
+.top a.volver{text-decoration:none;opacity:.9}
+.top a.volver:hover{opacity:1;color:#F2B98F}
+
+main{padding-block:56px 80px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start}
+.grid > div{min-width:0}
+.cab .caps{color:var(--oxido)}
+h1{font:500 clamp(2rem,4.5vw,3rem)/1.12 var(--serif);margin:14px 0 16px;text-wrap:balance}
+.intro{color:var(--gris);max-width:46ch}
+
+.vacantes{list-style:none;margin:30px 0 0;display:grid;gap:16px}
+.vacante{background:#fff;border:1px solid var(--linea);padding:24px}
+.vacante small{display:block;font:700 11px/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--oxido);margin-bottom:8px}
+.vacante h2{font:500 2rem/1.1 var(--serif)}
+.vacante p{color:var(--gris);margin-top:4px}
+.acciones{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 24px;font:700 13px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;border:1.5px solid transparent;cursor:pointer;background:none}
+.btn svg{width:18px;height:18px;flex:none}
+.btn-oxido{background:var(--oxido);color:#fff}
+.btn-oxido:hover{background:var(--oxido-2)}
+.btn-wa{background:#25D366;color:#0b3d1f}
+.btn-wa:hover{background:#1ebe5b}
+.btn-borde{border-color:var(--texto);color:var(--texto)}
+.btn-borde:hover{background:var(--texto);color:#fff}
+.correo{margin-top:14px;font-size:.95rem;color:var(--gris);overflow-wrap:anywhere}
+.correo b{color:var(--texto);font-weight:600}
+.nota{margin-top:26px;font-size:.95rem;color:var(--gris)}
+.vacio{background:#fff;border:1px solid var(--linea);padding:24px;color:var(--gris)}
+
+.anuncio{width:100%;height:auto;max-width:380px;margin-left:auto;position:sticky;top:24px;box-shadow:0 18px 50px rgba(34,32,30,.18)}
+@media (max-width:860px){
+  .grid{grid-template-columns:1fr;gap:40px}
+  .anuncio{margin:0 auto}
+  .btn{flex:1 1 100%}
+}
+footer{border-top:1px solid var(--linea);padding-block:28px;text-align:center;color:var(--gris);font-size:.92rem}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a href="/" aria-label="Ir a La Vecchia Pizza"><img src="../img/logo-blanco.svg" alt="La Vecchia Pizza" width="1810" height="1240"></a>
+    <a class="volver caps" href="/">← Volver</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <div>
+      <div class="cab">
+        <span class="caps">Trabaja con nosotros</span>
+        <h1>Únete a la familia La Vecchia</h1>
+        <p class="intro">Si te gusta la cocina italiana y trabajar en equipo, queremos conocerte. Envíanos tu currículum.</p>
+      </div>
+      <ul class="vacantes" id="lista"></ul>
+      <p class="nota">Adjunta tu currículum (PDF, Word o foto) al correo o por WhatsApp y te contactamos.</p>
+    </div>
+    <img class="anuncio" src="anuncio.jpg" alt="Anuncio: La Vecchia Pizza solicita Cocinero" width="900" height="1599">
+  </div>
+</main>
+
+<footer>© 2026 La Vecchia Pizza · Plaza Murano, Av. Huayacán, Cancún</footer>
+
+<script>
+(function () {
+  var CORREO = "lavecchiapizzacancun@gmail.com";
+  var WHATSAPP = "529981369306";
+  var lista = document.getElementById("lista");
+  var filas = document.getElementById("vacantes").textContent.split("\n")
+    .map(function (l) { return l.trim(); }).filter(Boolean);
+
+  function gmail(puesto) {
+    var asunto = "Postulación: " + puesto;
+    var cuerpo = "Hola La Vecchia, me interesa la vacante de " + puesto + ". Adjunto mi currículum.\n\nNombre:\nTeléfono:\n";
+    return "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(CORREO) +
+      "&su=" + encodeURIComponent(asunto) + "&body=" + encodeURIComponent(cuerpo);
+  }
+
+  if (!filas.length) {
+    lista.outerHTML = '<div class="vacio">Por ahora no tenemos vacantes abiertas, pero puedes enviarnos tu currículum a <b>' + CORREO + '</b>.</div>';
+    return;
+  }
+
+  filas.forEach(function (fila) {
+    var partes = fila.split("|");
+    var puesto = partes[0].trim(), desc = (partes[1] || "").trim();
+    var li = document.createElement("li"); li.className = "vacante";
+    li.innerHTML =
+      '<small>Solicitamos</small><h2></h2>' + (desc ? '<p></p>' : '') +
+      '<div class="acciones">' +
+        '<a class="btn btn-oxido" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>Enviar por Gmail</a>' +
+        '<a class="btn btn-wa wa-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>Enviar por WhatsApp</a>' +
+        '<button class="btn btn-borde" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span>Copiar correo</span></button>' +
+      '</div>' +
+      '<p class="correo">Correo: <b>' + CORREO + '</b></p>';
+    li.querySelector("h2").textContent = puesto;
+    if (desc) li.querySelector("p").textContent = desc;
+    li.querySelector("a").href = gmail(puesto);
+    li.querySelector(".wa-link").href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Hola La Vecchia, me interesa la vacante de " + puesto + ". Les envío mi currículum.");
+    var b = li.querySelector("button"), t = b.querySelector("span");
+    b.addEventListener("click", function () {
+      var ok = function () { t.textContent = "¡Copiado!"; setTimeout(function () { t.textContent = "Copiar correo"; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(CORREO).then(ok, function () { prompt("Copia el correo:", CORREO); });
+      else prompt("Copia el correo:", CORREO);
+    });
+    lista.appendChild(li);
+  });
+})();
+</script>
+</body>
+</html>
