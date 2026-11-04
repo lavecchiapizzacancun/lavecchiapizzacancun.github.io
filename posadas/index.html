@@ -137,7 +137,6 @@ footer{text-align:center;padding-block:28px;background:var(--verde);border-top:1
 
     <div class="acciones" id="descargas" hidden>
       <button class="btn lleno" type="button" id="bajar1">Descargar este menú (PDF)</button>
-      <button class="btn" type="button" id="bajarimg">Descargar imagen para historia</button>
       <button class="btn" type="button" id="bajar4">Descargar todos los menús (PDF)</button>
     </div>
     <p class="ayuda" id="nodesc" hidden>Para guardar un menú, ábrelo en grande y mantén presionada la imagen.</p>
@@ -194,7 +193,6 @@ document.getElementById('descargas').hidden=false;
 const msg=document.getElementById('msg');
 function bajar(file,name){const a=document.createElement('a');a.href=file;a.download=name;document.body.appendChild(a);a.click();a.remove();}
 document.getElementById('bajar1').onclick=()=>bajar('pdf/'+SL[act]+'.pdf','Posadas 2026 - '+NOM[act]+'.pdf');
-document.getElementById('bajarimg').onclick=()=>bajar('img/'+SL[act]+'.jpg','Posadas 2026 - '+NOM[act]+' (historia).jpg');
 document.getElementById('bajar4').onclick=()=>bajar('pdf/posadas-2026-la-vecchia.pdf','Posadas 2026 - La Vecchia - Menus.pdf');
 </script>
 
