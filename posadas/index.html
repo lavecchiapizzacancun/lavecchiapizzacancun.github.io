@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Posadas 2026 · La Vecchia Pizza</title>
+<meta name="description" content="Posadas 2026 en La Vecchia Pizza, Plaza Murano, Cancún. Cuatro menús navideños desde $360 por persona y barra libre.">
+<link rel="icon" href="../img/logo.svg">
+<style>*{box-sizing:border-box}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@600;700&family=Montserrat:wght@500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: papel crema navideño. Encabezado con logo dorado, pestañas con los 4 menús, carrusel deslizable de las 4 hojas A4 (lo que se ve es lo que se descarga), botones grandes, y reserva al final. */
+:root{
+  --papel:#FBF7F0; --papel2:#F3EBDD; --tinta:#2B211B; --gris:#5E5047; --oro:#A9802F; --oro2:#C9A24E; --rojo:#9E2A2B; --verde:#1F4A33;
+  --f-script:"Great Vibes","Snell Roundhand",cursive;
+  --f-caps:"Cormorant Garamond",Georgia,serif;
+  --f-txt:"Lora",Georgia,serif;
+  --f-eti:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--tinta);font:400 19px/1.6 var(--f-txt);margin:0}
+.g{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1100px;margin:0 auto}
+h1,h2,p{margin:0}
+:focus-visible{outline:3px solid var(--oro2);outline-offset:3px}
+
+.aviso{background:var(--verde);color:#F3EBDD;text-align:center;font:500 .95rem/1.4 var(--f-eti);padding-block:9px}
+
+header{text-align:center;padding-block:34px 10px}
+header img{width:130px;height:auto}
+.ano{font:600 .95rem/1 var(--f-eti);letter-spacing:.42em;padding-left:.42em;color:var(--rojo);margin-top:14px}
+h1{font:400 clamp(3.6rem,10vw,5.6rem)/1 var(--f-script);color:var(--oro);margin-top:6px}
+.desde{display:flex;flex-direction:column;align-items:center;margin-top:18px;color:#9E2A2B}.desde span{font:600 .85rem/1 Montserrat,sans-serif;letter-spacing:.24em}.desde b{font:700 4.2rem/1 "Cormorant Garamond",Georgia,serif;margin:4px 0}
+.volver{display:block;width:max-content;margin:0 auto 18px;font:600 .9rem/1 var(--f-eti);letter-spacing:.06em;color:var(--oro);text-decoration:none}
+header p{font-size:1.15rem;color:var(--gris);max-width:32ch;margin:6px auto 0}
+.fotos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:22px}
+.fotos img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:6px;display:block;box-shadow:0 12px 28px rgba(60,35,15,.2)}
+.fotos p{grid-column:1/-1;text-align:center;font:400 2.2rem/1.1 var(--f-script);color:var(--oro);margin:6px 0 0}
+
+/* pestañas */
+.tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:26px auto 22px}
+.tab{font:600 1rem/1 var(--f-eti);padding:13px 18px;border-radius:999px;border:1.5px solid var(--oro2);background:transparent;color:var(--tinta);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--oro);border-color:var(--oro);color:#fff}
+
+/* carrusel */
+.carrusel{position:relative}
+.pista{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:6px 0 22px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pista::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(80%,400px);scroll-snap-align:center;margin:0}
+.slide:first-child{margin-left:max(0px,calc(50% - min(40%,200px)))}
+.slide:last-child{margin-right:max(0px,calc(50% - min(40%,200px)))}
+.slide button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.slide img{width:100%;height:auto;display:block;border-radius:4px;box-shadow:0 14px 34px rgba(60,35,15,.22)}
+.flecha{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;border:1.5px solid var(--oro2);background:rgba(251,247,240,.94);color:var(--oro);font:400 2rem/1 var(--f-caps);cursor:pointer;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.12)}
+.flecha.ant{left:max(4px,calc(50% - 290px))}
+.flecha.sig{right:max(4px,calc(50% - 290px))}
+.puntos{display:flex;gap:10px;justify-content:center}
+.puntos span{width:10px;height:10px;border-radius:50%;background:#D9CDB8}
+.puntos span.on{background:var(--oro)}
+.ayuda{text-align:center;color:var(--gris);font-size:1rem;margin-top:12px}
+
+.acciones{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:24px auto 0;max-width:640px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:600 1.05rem/1.2 var(--f-eti);padding:17px 24px;border-radius:999px;border:1.5px solid var(--oro);background:#fff;color:var(--oro);cursor:pointer;text-decoration:none;text-align:center}
+.btn.lleno{background:var(--oro);color:#fff}
+.btn svg{width:22px;height:22px;flex:none}
+#msg{text-align:center;min-height:1.6em;color:var(--gris);font-size:1rem;margin-top:10px}
+
+/* reserva */
+.reserva{background:var(--verde);color:#F6EFE3;text-align:center;margin-top:60px}
+.reserva .wrap{display:grid;gap:16px;justify-items:center;padding-block:64px 70px}
+.reserva h2{font:400 clamp(3rem,8vw,4.6rem)/1 var(--f-script);color:#E6C982}
+.reserva p{font-size:1.15rem;max-width:36ch;color:#EDE4D4}
+.reserva .btn{background:transparent;color:#F3DDA6;border-color:#E6C982}
+.reserva .btn.lleno{background:#E6C982;color:#1B2E22}
+.tel{font:700 2rem/1 var(--f-caps);letter-spacing:.06em;color:#F3DDA6;user-select:all}
+.dir{font:600 .9rem/1.6 var(--f-eti);letter-spacing:.2em;text-transform:uppercase;color:#D9CFBE}
+footer{text-align:center;padding-block:28px;background:var(--verde);border-top:1px solid rgba(230,201,130,.25);color:#E6C982;font:400 1.8rem var(--f-script)}
+
+/* visor grande */
+.visor{position:fixed;inset:0;z-index:20;background:rgba(20,14,10,.94);display:flex;flex-direction:column}
+.visor[hidden]{display:none}
+.visor .barra{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
+.visor .barra .btn{padding:12px 18px;font-size:.95rem;background:#fff}
+.visor .area{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:0 8px 20px}
+.visor img{display:block;margin:0 auto;width:100%;max-width:640px;height:auto}
+.visor.zoom img{width:200%;max-width:none}
+
+@media (max-width:640px){.flecha{display:none}.acciones .btn{width:100%}}
+@media (prefers-reduced-motion:reduce){.pista{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+
+
+<header class="g">
+  <a class="volver" href="../">← La Vecchia Pizza</a>
+  <img src="img/logo-oro-osc.svg" alt="La Vecchia Pizza, Alta Cucina Italiana">
+  <div class="ano">NAVIDAD 2026</div>
+  <h1>Posadas</h1>
+  <p>Cuatro menús navideños para celebrar con tu equipo, tus amigos o tu familia.</p>
+  <div class="desde"><span>DESDE</span><b>$360</b><span>POR PERSONA</span></div>
+</header>
+<div class="g"><div class="wrap fotos">
+  <img src="img/posada-neon.jpg" alt="Grupo brindando en una mesa larga frente al neón La vita è bella">
+  <img src="img/posada-mesa.jpg" alt="Cuatro amigos brindando con vino junto al horno de leña">
+  <p>Así se vive una posada en La Vecchia</p>
+</div></div>
+
+<main class="g">
+  <div class="wrap">
+    <div class="tabs" role="tablist" aria-label="Menús">
+      <button class="tab" role="tab" aria-selected="true" data-i="0">La Tavolata</button>
+      <button class="tab" role="tab" aria-selected="false" data-i="1">Pasta e Amici</button>
+      <button class="tab" role="tab" aria-selected="false" data-i="2">Buon Natale</button>
+      <button class="tab" role="tab" aria-selected="false" data-i="3">Gran Festa</button>
+      <button class="tab" role="tab" aria-selected="false" data-i="4">Barra libre</button>
+    </div>
+
+    <div class="carrusel">
+      <div class="pista" id="pista">
+        <figure class="slide"><button type="button" aria-label="Ver La Tavolata en grande"><img src="img/la-tavolata.jpg" alt="Menú La Tavolata: entrada ensalada de la casa, ensalada César o pan al ajo; pizza para 2 personas peperoni, hawaiana, margarita o mexicana; agua de sabor o botella de vino de la casa; postre de cortesía."></button></figure>
+        <figure class="slide"><button type="button" aria-label="Ver Pasta e Amici en grande"><img src="img/pasta-e-amici.jpg" alt="Menú Pasta e Amici: entrada ensalada de la casa, alcachofa 4 quesos o pan al ajo; pasta por persona fetuccini Alfredo, espagueti a la boloñesa o ravioles; agua de sabor o botella de vino; postre de cortesía."></button></figure>
+        <figure class="slide"><button type="button" aria-label="Ver Buon Natale en grande"><img src="img/buon-natale.jpg" alt="Menú Buon Natale: entrada carpaccio de ternera, alcachofa 4 quesos o nueces y frutas; milanesa de pollo a la parmesana, risotto o fetuccini con pollo o lasaña; copa de clericot, sangría, vino o agua del día; postre de cortesía."></button></figure>
+        <figure class="slide"><button type="button" aria-label="Ver Gran Festa en grande"><img src="img/gran-festa.jpg" alt="Menú Gran Festa: entrada aros de calamar, burrata o nueces y frutas; pizza para 2 rib eye, gemelli, piccolo o di mare, o pasta con salmón, mariscos o camarón; margarita, mojito, vino, refresco o agua mineral; postre de cortesía."></button></figure>
+        <figure class="slide"><button type="button" aria-label="Ver Barra libre en grande"><img src="img/barra-libre.jpg" alt="Barra libre para agregar a tu posada, precio por persona por 1 hora: sin alcohol $150 (aguas de sabor, refrescos, agua mineral y natural); gold $290 (cervezas, vino de la casa, margaritas y clericot); premium $420 (cervezas, whisky, ron, carajillos y aperol)."></button></figure>
+      </div>
+      <button class="flecha ant" type="button" id="ant" aria-label="Menú anterior">‹</button>
+      <button class="flecha sig" type="button" id="sig" aria-label="Menú siguiente">›</button>
+    </div>
+    <div class="puntos" aria-hidden="true"><span class="on"></span><span></span><span></span><span></span><span></span></div>
+    <p class="ayuda">Desliza para ver los 4 menús y la barra libre. Toca un menú para verlo en grande.</p>
+
+    <div class="acciones" id="descargas" hidden>
+      <button class="btn lleno" type="button" id="bajar1">Descargar este menú (PDF)</button>
+      <button class="btn" type="button" id="bajarimg">Descargar imagen para historia</button>
+      <button class="btn" type="button" id="bajar4">Descargar todos los menús (PDF)</button>
+    </div>
+    <p class="ayuda" id="nodesc" hidden>Para guardar un menú, ábrelo en grande y mantén presionada la imagen.</p>
+    <div id="msg" role="status"></div>
+  </div>
+</main>
+
+<section class="reserva g" id="reservar" aria-labelledby="res-t">
+  <div class="wrap">
+    <h2 id="res-t">Reserva tu posada</h2>
+    <p>Escríbenos con la fecha, el número de personas y el menú que te interesa.</p>
+    <div class="acciones" style="margin-top:6px">
+      <a class="btn lleno" href="https://wa.me/529981369306?text=Hola%2C%20quiero%20informes%20de%20las%20Posadas%202026%20en%20La%20Vecchia" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3z"/></svg>
+        WhatsApp</a>
+      <a class="btn" href="https://www.instagram.com/lavecchiapizza/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zM17.3 5.5a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4zM21.9 7.6c-.1-1.6-.4-3-1.6-4.2S17.9 1.9 16.3 1.8C14.7 1.7 9.3 1.7 7.7 1.8 6.1 1.9 4.7 2.2 3.5 3.4S2 5.9 1.9 7.5c-.1 1.6-.1 7.1 0 8.7.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 7 .1 8.6 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-7 0-8.6zm-2 10.6a3.4 3.4 0 0 1-1.9 1.9c-1.3.5-4.5.4-6 .4s-4.7.1-6-.4a3.4 3.4 0 0 1-1.9-1.9c-.5-1.3-.4-4.5-.4-6s-.1-4.7.4-6A3.4 3.4 0 0 1 6 4.1c1.3-.5 4.5-.4 6-.4s4.7-.1 6 .4a3.4 3.4 0 0 1 1.9 1.9c.5 1.3.4 4.5.4 6s.1 4.7-.4 6z"/></svg>
+        Instagram</a>
+    </div>
+    <div class="tel">998 136 9306</div>
+    <div class="dir">Plaza Murano · Av. Huayacán · Cancún</div>
+  </div>
+</section>
+<footer class="g">La vita è bella</footer>
+
+<div class="visor" id="visor" hidden>
+  <div class="barra">
+    <button class="btn" type="button" id="zoom">Acercar</button>
+    <button class="btn" type="button" id="cerrar">Cerrar ✕</button>
+  </div>
+  <div class="area"><img id="grande" alt=""><p style="text-align:center;color:#EADFCF;font-size:.95rem;margin:12px 0 0">Mantén presionada la imagen para guardarla.</p></div>
+</div>
+
+<script>
+const SL=['la-tavolata','pasta-e-amici','buon-natale','gran-festa','barra-libre'];
+const NOM=['La Tavolata','Pasta e Amici','Buon Natale','Gran Festa','Barra libre'];
+const pista=document.getElementById('pista'),slides=[...pista.children],tabs=[...document.querySelectorAll('.tab')],pts=[...document.querySelectorAll('.puntos span')];
+let act=0;
+function ir(i){i=Math.max(0,Math.min(4,i));const s=slides[i];pista.scrollTo({left:s.offsetLeft-(pista.clientWidth-s.clientWidth)/2,behavior:'smooth'});marcar(i);}
+function marcar(i){act=i;tabs.forEach((t,k)=>t.setAttribute('aria-selected',k===i));pts.forEach((p,k)=>p.classList.toggle('on',k===i));document.getElementById('bajar1').textContent='Descargar '+NOM[i]+' (PDF)';}
+tabs.forEach(t=>t.onclick=()=>ir(+t.dataset.i));
+document.getElementById('ant').onclick=()=>ir(act-1);
+document.getElementById('sig').onclick=()=>ir(act+1);
+let tm;pista.addEventListener('scroll',()=>{clearTimeout(tm);tm=setTimeout(()=>{const c=pista.scrollLeft+pista.clientWidth/2;let best=0,d=1e9;slides.forEach((s,k)=>{const m=Math.abs(s.offsetLeft+s.clientWidth/2-c);if(m<d){d=m;best=k}});if(best!==act)marcar(best);},80)});
+marcar(0);
+
+const visor=document.getElementById('visor'),grande=document.getElementById('grande'),zb=document.getElementById('zoom');
+slides.forEach((s,k)=>s.querySelector('button').onclick=()=>{grande.src='img/'+SL[k]+'.jpg';grande.alt=s.querySelector('img').alt;visor.classList.remove('zoom');zb.textContent='Acercar';visor.hidden=false;document.getElementById('cerrar').focus();});
+zb.onclick=()=>{const z=visor.classList.toggle('zoom');zb.textContent=z?'Alejar':'Acercar';};
+document.getElementById('cerrar').onclick=()=>{visor.hidden=true;};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')visor.hidden=true;if(visor.hidden){if(e.key==='ArrowRight')ir(act+1);if(e.key==='ArrowLeft')ir(act-1);}});
+
+document.getElementById('descargas').hidden=false;
+const msg=document.getElementById('msg');
+function bajar(file,name){const a=document.createElement('a');a.href=file;a.download=name;document.body.appendChild(a);a.click();a.remove();}
+document.getElementById('bajar1').onclick=()=>bajar('pdf/'+SL[act]+'.pdf','Posadas 2026 - '+NOM[act]+'.pdf');
+document.getElementById('bajarimg').onclick=()=>bajar('img/'+SL[act]+'.jpg','Posadas 2026 - '+NOM[act]+' (historia).jpg');
+document.getElementById('bajar4').onclick=()=>bajar('pdf/posadas-2026-la-vecchia.pdf','Posadas 2026 - La Vecchia - Menus.pdf');
+</script>
+
+</body>
+</html>
